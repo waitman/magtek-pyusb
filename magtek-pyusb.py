@@ -11,6 +11,7 @@ added data len check to break out of loop (no error condition) - Waitman Gobble
 import sys
 import usb.core
 import usb.util
+import json
 
 VENDOR_ID = 0x0801
 PRODUCT_ID = 0x0002
@@ -100,6 +101,5 @@ info['first_name'] = track[j+1:k].strip()
 info['exp_year'] = track[k+1:k+3]
 info['exp_month'] = track[k+3:k+5]
 
-print "Bank card info: ", info
-
+print json.dumps(info)
     
