@@ -6,6 +6,7 @@ code can be found at: http://www.micahcarrick.com/credit-card-reader-pyusb.html
 You must be using the new PyUSB 1.0 branch and not the 0.x branch.
 
 Copyright (c) 2010 - Micah Carrick
+added data len check to break out of loop (no error condition) - Waitman Gobble
 """
 import sys
 import usb.core
@@ -52,6 +53,8 @@ while 1:
         if not swiped: 
             print "Reading..."
         swiped = True
+	if len(data) >= DATA_SIZE:
+		break
 
     except usb.core.USBError as e:
         if e.args == ('Operation timed out',) and swiped:

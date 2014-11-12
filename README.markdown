@@ -1,3 +1,6 @@
+
+updated by Waitman Gobble. note: need pyusb 1.0+ (dev). Debian package is the stable version of pyusb and will not work with this program. remove the package and install with pip.
+
 MagTek Credit Card Reader in Linux
 ==================================
 
