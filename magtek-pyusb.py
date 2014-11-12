@@ -7,11 +7,19 @@ You must be using the new PyUSB 1.0 branch and not the 0.x branch.
 
 Copyright (c) 2010 - Micah Carrick
 added data len check to break out of loop (no error condition) - Waitman Gobble
+
+# sqlite3 cc_data.sqlite3 "CREATE TABLE scans (date TEXT,amount TEXT,card TEXT)"
+
 """
 import sys
 import usb.core
 import usb.util
 import json
+import sqlite3
+from datetime import date, datetime
+import gnupg
+
+gpg = gnupg.GPG(gnupghome='/root/.gnupg')
 
 VENDOR_ID = 0x0801
 PRODUCT_ID = 0x0002
@@ -41,6 +49,9 @@ except usb.core.USBError as e:
     sys.exit("Could not set configuration: %s" % str(e))
     
 endpoint = device[0][(0,0)][0]
+
+# get amount to charge
+amount = raw_input('Enter amount to charge:')
 
 # wait for swipe
 
@@ -102,4 +113,10 @@ info['exp_year'] = track[k+1:k+3]
 info['exp_month'] = track[k+3:k+5]
 
 print json.dumps(info)
-    
+data = str(gpg.encrypt(json.dumps(info), 'waitman@waitman.net'))
+conn = sqlite3.connect('cc_data.sqlite3')
+c = conn.cursor()
+now = datetime.now()
+c.execute("INSERT INTO scans VALUES (?,?,?)",(now,amount,data))
+conn.commit()
+conn.close()
